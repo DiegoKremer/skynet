@@ -3,17 +3,19 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-#Define quais sao os atributos e rotulos do dataset.
+#Define quais sao os atributos e rotulos do dataset e atribui os dados
 atributos = [[135,1],[140, 1],[130,1],[145,1],[150,0],[170,0],[160,0],[155,0]]
 rotulos = [0,0,0,0,1,1,1,1]
 
-#Define o tipo de classificador que sera usado.
+#Define o tipo de classificador que sera usado
 classificador = tree.DecisionTreeClassifier()
 
 
-#Treina este classificador com os atributos e rotulos.
+#Treina este classificador com os atributos e rotulos
 classificador = classificador.fit(atributos, rotulos)
 
+#Mostra a importancia de cada atributo para predicao
+print(classificador.feature_importances_)
 
 #Recebe os atributos
 peso = raw_input('Qual o peso da fruta?')
