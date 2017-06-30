@@ -140,6 +140,12 @@ def build_estimator(model_dir, model_type):
 
     return m
 
+df_prever = pd.read_csv(
+        tf.gfile.Open("/home/diegokremer/tensorflow/dataset/prever.csv"),
+        names=COLUMNS,
+        skipinitialspace=True,
+        skiprows=1,
+        engine="python")
 
 
 def input_fn(df):
@@ -163,7 +169,25 @@ def input_fn(df):
     # Returns the feature columns and the label.
     return feature_cols, label
 
-
+def predict_fn(df):
+    """Input builder function."""
+    # Creates a dictionary mapping from each continuous feature column name (k) to
+    # the values of that column stored in a constant Tensor.
+    continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
+    # Creates a dictionary mapping from each categorical feature column name (k)
+    # to the values of that column stored in a tf.SparseTensor.
+    categorical_cols = {
+        k: tf.SparseTensor(
+            indices=[[i, 0] for i in range(df[k].size)],
+            values=df[k].values,
+            dense_shape=[df[k].size, 1])
+        for k in CATEGORICAL_COLUMNS}
+    # Merges the two dictionaries into one.
+    feature_cols = dict(continuous_cols)
+    feature_cols.update(categorical_cols)
+    # Converts the label column into a constant Tensor.
+    # Returns the feature columns and the label.
+    return feature_cols
 
 def train_and_eval(model_dir, model_type, train_steps, train_data, test_data):
     """Treina e avalia o modelo"""
@@ -195,20 +219,17 @@ def train_and_eval(model_dir, model_type, train_steps, train_data, test_data):
 
     m = build_estimator(model_dir, model_type)
     m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
+    prediction = m.predict_classes(input_fn=lambda: predict_fn(df_prever))
     results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
     for key in sorted(results):
         print("%s: %s" % (key, results[key]))
+    for key in sorted(results):
+        print("%s: %s" % (prediction, results[key]))
 
 
 
 
-    predictions = m.predict_classes(predict_fn(), as_iterable=True)
-
-    print("Ganha mais que 50K?     {}\n"
-        .format[predictions])
-
-
-FLAGS = None
+preFLAGS = None
 
 
 def main(_):
