@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
+import tflearn
 
 # Faz o download do dataset do Titanic no TFLearn
 from tflearn.datasets import titanic
@@ -29,5 +30,10 @@ Ignorar_colunas=[1, 6]
 # e transformar atributos categoricos em numericos
 dados = preprocess(dados, Ignorar_colunas)
 
-
+# Constroi a rede neural
+rede = tflearn.input_data(shape=[None, 6])
+rede = tflearn.fully_connected(rede, 32)
+rede = tflearn.fully_connected(rede, 32)
+rede = tflearn.fully_connected(rede, 2, activation='softmax')
+rede = tflearn.regression(rede)
 
