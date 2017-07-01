@@ -7,8 +7,8 @@ import tflearn
 from tflearn.datasets import titanic
 titanic.download_dataset('titanic_dataset.csv')
 
-# Carrega o CSV e indica que a primeira coluna é o label
-# e que há dados categoricos (nao numericos).
+# Carrega o CSV e indica que a primeira coluna e o label
+# e que ha dados categoricos (nao numericos).
 from tflearn.data_utils import load_csv
 dados, labels = load_csv('titanic_dataset.csv', target_column=0,
                         categorical_labels=True, n_classes=2)
@@ -36,4 +36,12 @@ rede = tflearn.fully_connected(rede, 32)
 rede = tflearn.fully_connected(rede, 32)
 rede = tflearn.fully_connected(rede, 2, activation='softmax')
 rede = tflearn.regression(rede)
+
+# Define o modelo, neste caso uma Deep Neural Network (Rede Neural Profunda)
+modelo = tflearn.DNN(rede)
+
+# Inicia o treinamento
+modelo.fit(dados, labels, n_epoch=10, batch_size=48, show_metric=True)
+
+
 
