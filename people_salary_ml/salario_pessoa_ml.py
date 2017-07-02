@@ -6,6 +6,7 @@ from six.moves import urllib
 
 import pandas as pd
 import tensorflow as tf
+import numpy as np
 
 
 #identifica as colunas (caracteristicas) dos dados presentes no dataset.
@@ -199,7 +200,7 @@ def train_and_eval(model_dir, model_type, train_steps, train_data, test_data):
         skipinitialspace=True,
         engine="python")
     df_test = pd.read_csv(
-        tf.gfile.Open("/home/diegokremer/tensorflow/dataset/teste.csv"),
+        tf.gfile.Open("/home/diegokremer/tensorflow/dataset/adult.test"),
         names=COLUMNS,
         skipinitialspace=True,
         skiprows=1,
@@ -219,12 +220,27 @@ def train_and_eval(model_dir, model_type, train_steps, train_data, test_data):
 
     m = build_estimator(model_dir, model_type)
     m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
-    prediction = m.predict_classes(input_fn=lambda: predict_fn(df_prever))
     results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
     for key in sorted(results):
         print("%s: %s" % (key, results[key]))
-    for key in sorted(results):
-        print("%s: %s" % (prediction, results[key]))
+
+
+    #Realiza a predicao das amostras do arquivo CSV
+    prediction = m.predict(input_fn=lambda: predict_fn(df_prever))
+
+    #Exibe os resultados da predicao e compara com o real
+    print("Previsao: ",list(prediction))
+    print("Real:      [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0]",)
+
+
+    acertos = 0
+
+    resultado_certo = [0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0]
+    resultado_previsto = []
+
+
+    print ("Acertos: ",acertos,"/12")
+
 
 
 
