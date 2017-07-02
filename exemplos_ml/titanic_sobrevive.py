@@ -49,9 +49,9 @@ nome = raw_input('Qual seu nome?')
 sexo = raw_input('Qual seu sexo?')
 #Traduz o sexo de portugues para ingles para corresponder ao dataset
 if (sexo == 'Feminino'):
-    sexo = 'Female'
+    sexo = 'female'
 else:
-    sexo='Male'
+    sexo ='male'
 idade = raw_input('Qual sua idade?')
 irmaos_esposo = raw_input('Quantos irmaos e/ou esposa(o) levou?')
 pais_filhos = raw_input('Quantos pais e/ou filhos levou?')
@@ -62,14 +62,10 @@ valor_passagem = raw_input('Valor da passagem?')
 pessoa = [classe, nome, sexo, idade, irmaos_esposo, pais_filhos, passagem, valor_passagem]
 
 #Processa essa pessoa para seus dados estejam corretos
-pessoa = preprocessa(pessoa, Ignorar_colunas)
+pessoa = preprocessa([pessoa], Ignorar_colunas)
 
 #Realiza a previsao baseado na pessoa criada e processada
 previsao = modelo.predict(pessoa)
 
 #Exibe a previsao na tela
 print("Chance de sobrevivencia...", previsao[0][1])
-
-
-
-
